@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" fill="none">
+  <!-- Background -->
+  <rect width="180" height="180" rx="40" fill="#030303"/>
+  
+  <!-- Outer glow effect -->
+  <circle cx="90" cy="90" r="70" fill="none" stroke="#ef4444" stroke-width="2" opacity="0.3"/>
+  <circle cx="90" cy="90" r="60" fill="none" stroke="#ef4444" stroke-width="1" opacity="0.2"/>
+  
+  <!-- Main flame -->
+  <path 
+    d="M90 30c0 0-35 35-35 70c0 20 14 40 35 45c21-5 35-25 35-45c0-35-35-70-35-70z" 
+    fill="url(#flameGradientApple)"
+  />
+  
+  <!-- Middle flame layer -->
+  <path 
+    d="M90 55c0 0-22 22-22 45c0 13 9 26 22 30c13-4 22-17 22-30c0-23-22-45-22-45z" 
+    fill="url(#flameGradientMiddle)"
+  />
+  
+  <!-- Inner flame -->
+  <path 
+    d="M90 80c0 0-12 12-12 24c0 7 5 14 12 16c7-2 12-9 12-16c0-12-12-24-12-24z" 
+    fill="#fbbf24"
+  />
+  
+  <!-- Bright center -->
+  <ellipse cx="90" cy="112" rx="6" ry="10" fill="#fef3c7"/>
+  
+  <!-- Gradient definitions -->
+  <defs>
+    <linearGradient id="flameGradientApple" x1="90" y1="30" x2="90" y2="145" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#dc2626"/>
+      <stop offset="40%" stop-color="#ef4444"/>
+      <stop offset="70%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#eab308"/>
+    </linearGradient>
+    <linearGradient id="flameGradientMiddle" x1="90" y1="55" x2="90" y2="130" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+</svg>
