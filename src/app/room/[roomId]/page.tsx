@@ -3,9 +3,17 @@
 import { useUsername } from "@/hooks/use-username";
 import { client } from "@/lib/client";
 import { useRealtime } from "@/lib/realtime-client";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+
+interface Message {
+  id: string;
+  sender: string;
+  text: string;
+  timestamp: number;
+  roomId: string;
+}
 
 function formatTimeRemaining(seconds: number): string {
   const mins = Math.floor(seconds / 60);
@@ -26,6 +34,7 @@ const Page = () => {
   const roomId = params.roomId as string;
 
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { username } = useUsername();
 
@@ -90,6 +99,37 @@ const Page = () => {
         },
         { query: { roomId } }
       );
+    },
+    onMutate: async ({ text }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["messages", roomId] });
+
+      // Snapshot previous value
+      const previousMessages = queryClient.getQueryData(["messages", roomId]);
+
+      // Optimistically update
+      const optimisticMessage: Message = {
+        id: `temp-${Date.now()}`,
+        sender: username,
+        text,
+        timestamp: Date.now(),
+        roomId,
+      };
+
+      queryClient.setQueryData(
+        ["messages", roomId],
+        (old: { messages: Message[] } | undefined) => ({
+          messages: [...(old?.messages || []), optimisticMessage],
+        })
+      );
+
+      return { previousMessages };
+    },
+    onError: (_err, _variables, context) => {
+      // Rollback on error
+      if (context?.previousMessages) {
+        queryClient.setQueryData(["messages", roomId], context.previousMessages);
+      }
     },
   });
 
@@ -161,7 +201,7 @@ const Page = () => {
             <div className="flex flex-col min-w-0">
               <span className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1 hidden sm:block">Room</span>
               <div className="flex items-center gap-1 sm:gap-2">
-                <span className="font-bold text-green-400 text-xs sm:text-sm tracking-wider truncate max-w-[80px] sm:max-w-none">{roomId}</span>
+                <span className="font-bold text-green-400 text-xs sm:text-sm tracking-wider truncate max-w-20 sm:max-w-none">{roomId}</span>
                 <button
                   onClick={copyLink}
                   className={`text-[10px] px-1.5 sm:px-2 py-0.5 rounded transition-all shrink-0 ${
@@ -241,7 +281,7 @@ const Page = () => {
                     ? "bg-green-500/10 border border-green-500/20" 
                     : "bg-zinc-800/50 border border-zinc-700/50"
                 } px-3 sm:px-4 py-2 sm:py-3 rounded-lg`}>
-                  <p className="text-zinc-100 text-sm leading-relaxed break-words">{msg.text}</p>
+                  <p className="text-zinc-100 text-sm leading-relaxed wrap-break-word">{msg.text}</p>
                   {/* Subtle burning effect on hover */}
                   <div className="absolute inset-0 bg-linear-to-t from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
                 </div>
