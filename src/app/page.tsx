@@ -77,10 +77,10 @@ function Lobby() {
           
           <h1 className="text-4xl sm:text-5xl font-black tracking-tight">
             <span className="text-red-500 glow-red flicker">BURN</span>
-            <span className="text-zinc-100">ROOM</span>
+            <span className="text-foreground">ROOM</span>
           </h1>
           
-          <p className="text-zinc-500 text-xs sm:text-sm max-w-sm mx-auto leading-relaxed px-2">
+          <p className="text-muted text-xs sm:text-sm max-w-sm mx-auto leading-relaxed px-2">
             Self-destructing chat rooms. Messages vanish forever when the timer hits zero.
             <span className="text-red-400"> No logs. No traces. No evidence.</span>
           </p>
@@ -91,39 +91,39 @@ function Lobby() {
           {/* Glow effect */}
           <div className="absolute -inset-0.5 bg-linear-to-r from-red-500/20 via-amber-500/20 to-red-500/20 rounded-lg blur opacity-30 group-hover:opacity-50 transition-opacity" />
           
-          <div className="relative border border-zinc-800 bg-zinc-950/80 p-5 sm:p-8 backdrop-blur-xl rounded-lg">
+          <div className="relative border border-card-border bg-card/80 p-5 sm:p-8 backdrop-blur-xl rounded-lg">
             <div className="space-y-5 sm:space-y-6">
               {/* Identity section */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <label className="text-xs text-zinc-500 uppercase tracking-wider">
+                  <label className="text-xs text-muted uppercase tracking-wider">
                     Your Anonymous Identity
                   </label>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex-1 bg-black border border-zinc-800 p-4 font-mono text-green-400 glow-green relative overflow-hidden">
+                  <div className="flex-1 bg-background border border-card-border p-4 font-mono text-green-500 dark:text-green-400 dark:glow-green relative overflow-hidden">
                     <span className="relative z-10">{username}</span>
                     <div className="absolute inset-0 bg-linear-to-r from-green-500/5 to-transparent" />
                   </div>
                 </div>
-                <p className="text-zinc-600 text-xs">
+                <p className="text-muted text-xs">
                   This identity exists only for this session
                 </p>
               </div>
 
               {/* Divider */}
               <div className="flex items-center gap-4">
-                <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
-                <span className="text-zinc-700 text-xs">●</span>
-                <div className="flex-1 h-px bg-linear-to-r from-transparent via-zinc-800 to-transparent" />
+                <div className="flex-1 h-px bg-linear-to-r from-transparent via-card-border to-transparent" />
+                <span className="text-muted text-xs">●</span>
+                <div className="flex-1 h-px bg-linear-to-r from-transparent via-card-border to-transparent" />
               </div>
 
               {/* Warning */}
               <div className="flex items-start gap-3 bg-amber-500/5 border border-amber-500/20 p-3 rounded">
                 <span className="text-amber-500 text-lg">⏱️</span>
-                <div className="text-xs text-amber-200/70 leading-relaxed">
-                  <span className="text-amber-400 font-semibold">10:00 countdown</span> begins when the room is created. 
+                <div className="text-xs text-amber-700 dark:text-amber-200/70 leading-relaxed">
+                  <span className="text-amber-600 dark:text-amber-400 font-semibold">10:00 countdown</span> begins when the room is created. 
                   All messages are permanently destroyed when time expires.
                 </div>
               </div>
@@ -156,7 +156,7 @@ function Lobby() {
 
         {/* Footer */}
         <div className="text-center space-y-2 px-2">
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-zinc-600 text-[10px] sm:text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-muted text-[10px] sm:text-xs">
             <span className="flex items-center gap-1">
               <span className="text-red-500">◆</span> End-to-end ephemeral
             </span>

@@ -181,9 +181,9 @@ const Page = () => {
       )}
       
       {/* Header */}
-      <header className="border-b border-zinc-800 bg-zinc-950/90 backdrop-blur-xl relative z-10">
+      <header className="border-b border-card-border bg-card/90 backdrop-blur-xl relative z-10">
         {/* Progress bar */}
-        <div className="h-1 bg-zinc-900 relative overflow-hidden">
+        <div className="h-1 bg-background relative overflow-hidden">
           <div 
             className={`h-full transition-all duration-1000 ease-linear ${
               urgency === "critical" ? "bg-red-500 animate-pulse" :
@@ -199,15 +199,15 @@ const Page = () => {
           <div className="flex items-center gap-2 sm:gap-6 flex-1 min-w-0">
             {/* Room ID */}
             <div className="flex flex-col min-w-0">
-              <span className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1 hidden sm:block">Room</span>
+              <span className="text-[10px] text-muted uppercase tracking-wider mb-1 hidden sm:block">Room</span>
               <div className="flex items-center gap-1 sm:gap-2">
-                <span className="font-bold text-green-400 text-xs sm:text-sm tracking-wider truncate max-w-20 sm:max-w-none">{roomId}</span>
+                <span className="font-bold text-green-600 dark:text-green-400 text-xs sm:text-sm tracking-wider truncate max-w-20 sm:max-w-none">{roomId}</span>
                 <button
                   onClick={copyLink}
                   className={`text-[10px] px-1.5 sm:px-2 py-0.5 rounded transition-all shrink-0 ${
                     copyStatus === "COPIED!" 
-                      ? "bg-green-500/20 text-green-400 border border-green-500/30" 
-                      : "bg-zinc-800 hover:bg-zinc-700 text-zinc-500 hover:text-zinc-300 border border-zinc-700"
+                      ? "bg-green-500/20 text-green-600 dark:text-green-400 border border-green-500/30" 
+                      : "bg-card hover:bg-card-border text-muted hover:text-foreground border border-card-border"
                   }`}
                 >
                   {copyStatus}
@@ -215,11 +215,11 @@ const Page = () => {
               </div>
             </div>
 
-            <div className="h-8 sm:h-10 w-px bg-zinc-800 shrink-0" />
+            <div className="h-8 sm:h-10 w-px bg-card-border shrink-0" />
 
             {/* Countdown */}
             <div className="flex flex-col">
-              <span className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <span className="text-[10px] text-muted uppercase tracking-wider mb-1 flex items-center gap-1">
                 <span className={urgency === "critical" ? "animate-pulse" : ""}>💣</span>
                 <span className="hidden sm:inline">Self-Destruct</span>
               </span>
@@ -233,12 +233,12 @@ const Page = () => {
           <button 
             onClick={() => destroyRoom()}
             disabled={isDestroying}
-            className="relative group overflow-hidden rounded disabled:opacity-50 shrink-0"
+            className="relative group overflow-hidden rounded disabled:opacity-50 shrink-0 cursor-pointer"
           >
             <div className="absolute inset-0 bg-linear-to-r from-red-600 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="relative flex items-center gap-1 sm:gap-2 bg-zinc-800 group-hover:bg-transparent border border-zinc-700 group-hover:border-red-500/50 px-2 sm:px-4 py-2 transition-all">
+            <div className="relative flex items-center gap-1 sm:gap-2 bg-card group-hover:bg-transparent border border-card-border group-hover:border-red-500/50 px-2 sm:px-4 py-2 transition-all">
               <span className="text-base sm:text-lg group-hover:animate-pulse">🔥</span>
-              <span className="text-[10px] sm:text-xs font-bold text-zinc-400 group-hover:text-white tracking-wider hidden sm:inline">
+              <span className="text-[10px] sm:text-xs font-bold text-muted group-hover:text-white tracking-wider hidden sm:inline">
                 {isDestroying ? "DESTROYING..." : "DESTROY NOW"}
               </span>
             </div>
@@ -247,13 +247,13 @@ const Page = () => {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 burn-gradient">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 dark:burn-gradient">
         {messages?.messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center space-y-4 px-4">
             <div className="text-4xl opacity-20">💬</div>
             <div className="space-y-2">
-              <p className="text-zinc-500 text-sm">No messages yet</p>
-              <p className="text-zinc-600 text-xs">
+              <p className="text-muted text-sm">No messages yet</p>
+              <p className="text-muted text-xs">
                 Start the conversation before time runs out
               </p>
             </div>
@@ -269,19 +269,19 @@ const Page = () => {
             >
               <div className={`max-w-[85%] sm:max-w-[70%] ${isOwn ? "items-end" : "items-start"}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-xs font-medium ${isOwn ? "text-green-400" : "text-amber-400"}`}>
+                  <span className={`text-xs font-medium ${isOwn ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"}`}>
                     {isOwn ? "You" : msg.sender}
                   </span>
-                  <span className="text-[10px] text-zinc-600">
+                  <span className="text-[10px] text-muted">
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </span>
                 </div>
                 <div className={`relative group ${
                   isOwn 
                     ? "bg-green-500/10 border border-green-500/20" 
-                    : "bg-zinc-800/50 border border-zinc-700/50"
+                    : "bg-card/50 border border-card-border/50"
                 } px-3 sm:px-4 py-2 sm:py-3 rounded-lg`}>
-                  <p className="text-zinc-100 text-sm leading-relaxed wrap-break-word">{msg.text}</p>
+                  <p className="text-foreground text-sm leading-relaxed wrap-break-word">{msg.text}</p>
                   {/* Subtle burning effect on hover */}
                   <div className="absolute inset-0 bg-linear-to-t from-red-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-lg pointer-events-none" />
                 </div>
@@ -293,7 +293,7 @@ const Page = () => {
       </div>
 
       {/* Input */}
-      <div className="border-t border-zinc-800 bg-zinc-950/90 backdrop-blur-xl p-2 sm:p-4">
+      <div className="border-t border-card-border bg-card/90 backdrop-blur-xl p-2 sm:p-4">
         <div className="flex gap-2 sm:gap-3">
           <div className="flex-1 relative">
             <span className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-green-500 cursor-blink font-bold">
@@ -313,7 +313,7 @@ const Page = () => {
                 }
               }}
               placeholder="Type message..."
-              className="w-full bg-black/50 pl-7 sm:pl-8 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-zinc-800 focus:border-green-500/50 focus:outline-none focus:ring-1 focus:ring-green-500/20 transition-all text-zinc-100 placeholder:text-zinc-600 text-sm rounded-lg"
+              className="w-full bg-background/50 pl-7 sm:pl-8 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-card-border focus:border-green-500/50 focus:outline-none focus:ring-1 focus:ring-green-500/20 transition-all text-foreground placeholder:text-muted text-sm rounded-lg"
             />
           </div>
           <button
@@ -323,7 +323,7 @@ const Page = () => {
               inputRef.current?.focus();
               setInput("");
             }}
-            className="relative group overflow-hidden rounded-lg disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            className="relative group overflow-hidden rounded-lg disabled:opacity-30 disabled:cursor-not-allowed shrink-0 cursor-pointer"
           >
             <div className="absolute inset-0 bg-linear-to-r from-green-600 to-green-500" />
             <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent" />
@@ -337,9 +337,9 @@ const Page = () => {
         {/* Bottom warning */}
         {urgency !== "safe" && (
           <div className={`mt-3 text-center text-xs ${
-            urgency === "critical" ? "text-red-400 animate-pulse" :
-            urgency === "danger" ? "text-red-400" :
-            "text-amber-400"
+            urgency === "critical" ? "text-red-500 dark:text-red-400 animate-pulse" :
+            urgency === "danger" ? "text-red-500 dark:text-red-400" :
+            "text-amber-500 dark:text-amber-400"
           }`}>
             {urgency === "critical" && "⚠️ Room will self-destruct in less than 30 seconds!"}
             {urgency === "danger" && "⚠️ Less than 1 minute remaining"}

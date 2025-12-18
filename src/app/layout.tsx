@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${jetbrainsMono.variable} antialiased bg-[#030303] min-h-screen`}>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`${jetbrainsMono.variable} antialiased min-h-screen bg-background text-foreground`}>
         <div className="noise" />
         <div className="scanlines" />
         <Providers>{children}</Providers>

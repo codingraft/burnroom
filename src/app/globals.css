@@ -3,11 +3,37 @@
 :root {
   --background: #030303;
   --foreground: #ededed;
+  --card: #0a0a0a;
+  --card-border: #27272a;
+  --muted: #71717a;
+  --accent: #ef4444;
+}
+
+.light {
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-border: #e4e4e7;
+  --muted: #71717a;
+  --accent: #dc2626;
+}
+
+.dark {
+  --background: #030303;
+  --foreground: #ededed;
+  --card: #0a0a0a;
+  --card-border: #27272a;
+  --muted: #71717a;
+  --accent: #ef4444;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -16,6 +42,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-jetbrains-mono), monospace;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Scanline effect */
@@ -89,22 +116,46 @@ body {
   animation: blink 1s step-end infinite;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
+/* Custom scrollbar - Dark mode */
+.dark ::-webkit-scrollbar {
   width: 6px;
 }
 
-::-webkit-scrollbar-track {
+.dark ::-webkit-scrollbar-track {
   background: #0a0a0a;
 }
 
-::-webkit-scrollbar-thumb {
+.dark ::-webkit-scrollbar-thumb {
   background: #27272a;
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.dark ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
+}
+
+/* Custom scrollbar - Light mode */
+.light ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.light ::-webkit-scrollbar-track {
+  background: #f4f4f5;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: #d4d4d8;
+  border-radius: 3px;
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: #a1a1aa;
+}
+
+/* Hide effects in light mode */
+.light .noise,
+.light .scanlines {
+  opacity: 0;
 }
 
 /* Noise texture overlay */
