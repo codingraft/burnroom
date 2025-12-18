@@ -5,7 +5,7 @@ import { client } from "@/lib/client";
 import { useRealtime } from "@/lib/realtime-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface Message {
   id: string;
@@ -29,6 +29,13 @@ function getUrgencyLevel(seconds: number | null): "safe" | "warning" | "danger" 
   return "safe";
 }
 
+const URGENCY_STYLES = {
+  safe: "text-green-400 border-green-500/30",
+  warning: "text-amber-400 border-amber-500/30 glow-amber",
+  danger: "text-red-400 border-red-500/30 glow-red",
+  critical: "text-red-500 border-red-500/50 glow-red urgent-pulse",
+} as const;
+
 const Page = () => {
   const params = useParams();
   const roomId = params.roomId as string;
@@ -50,31 +57,39 @@ const Page = () => {
     queryFn: async () => {
       const res = await client.room.ttl.get({ query: { roomId } });
       return res.data
-    }
+    },
+    staleTime: Infinity, // TTL is fetched once, then managed by local timer
   })
 
   useEffect(() => {
     if (ttlData?.ttl !== undefined) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTimeRemaining(ttlData.ttl);
     }
   }, [ttlData?.ttl]);
 
+  // Timer effect - only starts once when timeRemaining is set
   useEffect(() => {
-    if (timeRemaining === null || timeRemaining <= 0) return;
+    if (timeRemaining === null) return;
     
-    if(timeRemaining === 0) {
-      router.push("/?destroyed=true");
-      return;
-    }
     const interval = setInterval(() => {
       setTimeRemaining((prev) => {
-        if (prev === null || prev <= 0) return prev;
+        if (prev === null || prev <= 0) {
+          clearInterval(interval);
+          return prev;
+        }
         return prev - 1;
       });
     }, 1000);
 
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRemaining !== null]); // Only re-run when timeRemaining changes from null to a value
+
+  // Handle redirect when time runs out
+  useEffect(() => {
+    if (timeRemaining === 0) {
+      router.push("/?destroyed=true");
+    }
   }, [timeRemaining, router]);
 
   const { data: messages, refetch } = useQuery({
@@ -152,23 +167,19 @@ const Page = () => {
     }
   })
 
-  const copyLink = () => {
+  const copyLink = useCallback(() => {
     const url = window.location.href;
     navigator.clipboard.writeText(url);
     setCopyStatus("COPIED!");
     setTimeout(() => setCopyStatus("COPY"), 2000);
-  };
+  }, []);
 
-  const urgency = getUrgencyLevel(timeRemaining);
+  const urgency = useMemo(() => getUrgencyLevel(timeRemaining), [timeRemaining]);
 
-  const urgencyStyles = {
-    safe: "text-green-400 border-green-500/30",
-    warning: "text-amber-400 border-amber-500/30 glow-amber",
-    danger: "text-red-400 border-red-500/30 glow-red",
-    critical: "text-red-500 border-red-500/50 glow-red urgent-pulse",
-  };
-
-  const progressPercent = timeRemaining !== null ? (timeRemaining / 300) * 100 : 100;
+  const progressPercent = useMemo(
+    () => (timeRemaining !== null ? (timeRemaining / 600) * 100 : 100),
+    [timeRemaining]
+  );
 
   return (
     <main className="flex flex-col h-screen max-h-screen overflow-hidden relative">
@@ -223,7 +234,7 @@ const Page = () => {
                 <span className={urgency === "critical" ? "animate-pulse" : ""}>💣</span>
                 <span className="hidden sm:inline">Self-Destruct</span>
               </span>
-              <div className={`text-lg sm:text-2xl font-black tracking-wider ${urgencyStyles[urgency]}`}>
+              <div className={`text-lg sm:text-2xl font-black tracking-wider ${URGENCY_STYLES[urgency]}`}>
                 {timeRemaining !== null ? formatTimeRemaining(timeRemaining) : "--:--"}
               </div>
             </div>
