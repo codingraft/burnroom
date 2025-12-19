@@ -47,7 +47,7 @@ const Page = () => {
 
   const [input, setInput] = useState<string>("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const [copyStatus, setCopyStatus] = useState<string>("COPY");
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
@@ -102,8 +102,20 @@ const Page = () => {
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   }, [messages]);
+
+  // Scroll to bottom on initial load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const { mutate: sendMessage, isPending } = useMutation({
     mutationFn: async ({ text }: { text: string }) => {
@@ -258,9 +270,12 @@ const Page = () => {
       </header>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 dark:burn-gradient">
+      <div 
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-3 sm:space-y-4 dark:burn-gradient flex flex-col"
+      >
         {messages?.messages.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full text-center space-y-4 px-4">
+          <div className="flex flex-col items-center justify-center flex-1 text-center space-y-4 px-4">
             <div className="text-4xl opacity-20">💬</div>
             <div className="space-y-2">
               <p className="text-muted text-sm">No messages yet</p>
@@ -269,6 +284,11 @@ const Page = () => {
               </p>
             </div>
           </div>
+        )}
+
+        {/* Spacer to push messages to bottom when there are few */}
+        {messages?.messages && messages.messages.length > 0 && (
+          <div className="flex-1" />
         )}
 
         {messages?.messages.map((msg) => {
@@ -300,7 +320,6 @@ const Page = () => {
             </div>
           );
         })}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
